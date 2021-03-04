@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -36,5 +37,34 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+    public function login(Request $request)
+    {
+    
+        $this->validate($request, [
+            'username' => 'required|string', //VALIDASI KOLOM USERNAME
+            //TAPI KOLOM INI BISA BERISI EMAIL ATAU USERNAME
+            'password' => 'required|string',
+        ]);
+    
+        //LAKUKAN PENGECEKAN, JIKA INPUTAN DARI USERNAME FORMATNYA ADALAH EMAIL, MAKA KITA AKAN MELAKUKAN PROSES AUTHENTICATION MENGGUNAKAN EMAIL, SELAIN ITU, AKAN MENGGUNAKAN USERNAME
+        $loginType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+      
+        //TAMPUNG INFORMASI LOGINNYA, DIMANA KOLOM TYPE PERTAMA BERSIFAT DINAMIS BERDASARKAN VALUE DARI PENGECEKAN DIATAS
+        $login = [
+            $loginType => $request->username,
+            'password' => $request->password
+        ];
+      
+        //LAKUKAN LOGIN
+   
+    
+        if (auth()->attempt($login)) {
+            //JIKA BERHASIL, MAKA REDIRECT KE HALAMAN HOME
+            return redirect()->route('home');
+        }else{
+            return redirect()->route('login')->with('error','Email/Password salah!');
+        }
+        //JIKA SALAH, MAKA KEMBALI KE LOGIN DAN TAMPILKAN NOTIFIKASI 
     }
 }

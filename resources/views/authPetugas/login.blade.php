@@ -3,18 +3,12 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-       
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+                <div class="card-header">Login Petugas</div>
 
                 <div class="card-body">
-                    @if(Auth::guard('web')->check())
-                    @if(Auth::guard('web') && Auth::guard('web')->user()->status_user == 'nonAktif')
-                    <p class="text-center">Akun Anda belum Di verfikasi.Jika sudah harap refresh halaman ini!</p>
-                    @endif
-                    @else
-                    <form method="POST" action="{{ route('logina') }}">
+                    <form method="POST" action="{{ route('petugas.login.submit') }}">
                         @csrf
 
                         <div class="form-group row">
@@ -44,7 +38,7 @@
                                 @enderror
                             </div>
                         </div>
-                     
+
                         <div class="form-group row">
                             <div class="col-md-6 offset-md-4">
                                 <div class="form-check">
@@ -56,10 +50,10 @@
                                 </div>
                             </div>
                         </div>
-                        @if (Session::has('error'))
+                        @if (Session::has('msg'))
                         <div class="alert alert-warning">
                             <ul>
-                                <li>{!! Session::get('error') !!}</li>
+                                <li>{!! Session::get('msg') !!}</li>
                             </ul>
                         </div>
                     @endif
@@ -77,7 +71,6 @@
                             </div>
                         </div>
                     </form>
-                    @endif
                 </div>
             </div>
         </div>

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Auth;
 class HomeController extends Controller
 {
     /**
@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+
     }
 
     /**
@@ -23,6 +23,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if(Auth::guard('web')->user()->status_user == 'nonAktif'){
+            return view('auth.login')->with('msg', 'Mohon Maaf akun anda belum diverifikasi! harap sabar!');
+        }
         return view('home');
     }
 }
