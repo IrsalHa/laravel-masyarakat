@@ -33,7 +33,7 @@
                 {{ pengaduan.isi_laporan.substring(0, 20) + "...." }}
               </td>
               <td v-else>{{ pengaduan.isi_laporan }}</td>
-              <td>{{ pengaduan.foto }}</td>
+              <td><img :src="pengaduan.foto" style="max-width:100px;max-height:100px;"> </td>
               <td v-if="pengaduan.status == '0'">Belum</td>
               <td v-else>
                 {{
@@ -42,10 +42,10 @@
                 }}
               </td>
               <td>
-                <button class="btn btn-success m-1 btn-sm">
+                <button @click="show(pengaduan)" class="btn btn-success m-1 btn-sm">
                   Show
                 </button>
-                <button class="btn btn-danger m-1 btn-sm">
+                <button @click="hapus(pengaduan,index)" class="btn btn-danger m-1 btn-sm">
                   Delete
                 </button>
               </td>
@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal Create -->
     <div
       class="modal fade"
       id="modalpengaduan"
@@ -86,6 +86,7 @@
               </div>
               <div class="form-group-row">
                 <textarea
+                  v-model="pengaduan_ini.isi_laporan"
                   class="form-control"
                   name="isi_laporan"
                   rows="3"
@@ -115,14 +116,99 @@
             >
               Close
             </button>
-            <button type="button" class="btn btn-primary">
-              Save changes
+            <button @click="buatpengaduan()" type="button" class="btn btn-primary">
+              Create
             </button>
           </div>
         </div>
       </div>
     </div>
-    <!-- Modal -->
+    <!-- Modal Create -->
+
+        <!-- Modal Show -->
+    <div
+      class="modal fade"
+      id="modalshow"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+            Pengaduan {{ pengaduan_ini.tgl_pengaduan }}
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group-row">
+                <label>Isi Laporan</label>
+              </div>
+              <div class="form-group-row">
+                <textarea
+                  v-model="pengaduan_ini.isi_laporan"
+                  class="form-control"
+                  name="isi_laporan"
+                  rows="3"
+                ></textarea>
+              </div>
+              <br />
+              <div class="form-group-row">
+                <label>Foto</label>
+              </div>
+              <div class="form-group-row">
+                <img
+                  v-if="preview_img != 0"
+                  :src="preview_img"
+                  style="max-width: 100px; max-height: 100px;"
+                />
+                <img
+                  v-else
+                  :src="pengaduan_ini.foto"
+                  style="max-width: 100px; max-height: 100px;"
+                />
+              </div>
+              <div class="form-group-row">
+                <input @change="onPreview" type="file" />
+              </div>
+              <br>
+               <div class="form-group-row">
+                <label v-if="pengaduan_ini.status && pengaduan_ini.status != '0' ">Status: {{pengaduan_ini.status.charAt(0).toUpperCase() + pengaduan_ini.status.substring(1)}}</label>
+                <label v-else>Status: Belum</label>
+              </div>
+             <div class="form-group-row">
+              <label v-if="pengaduan_ini.tanggapan == null">Tanggapan: Belum Ada</label>
+              <label v-else>TGL Tanggapan: {{ pengaduan_ini.tgl_tanggapan }}<br>Tanggapan: {{ pengaduan_ini.tanggapan }}</label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button @click="updatepengaduan()" type="button" class="btn btn-primary">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Show -->
+
   </div>
 </template>
 
@@ -131,6 +217,7 @@ export default {
   data() {
     return {
       pengaduans: [],
+     pengaduan_ini: [],
       user_ini: [],
       img: null,
       preview_img: null,
@@ -141,7 +228,55 @@ export default {
     this.get_user_ini();
   },
   methods: {
-    buat: () => {
+    show: function(pengaduan){
+        this.preview_img = []
+        $("#modalshow").modal()
+        this.pengaduan_ini = pengaduan
+        this.get_pengaduan();
+    },
+    updatepengaduan: function(){
+          let config = {
+            header : {
+                'Content-Type' : 'image/png'
+            }
+        }
+        let data = new FormData()
+        data.append('id_pengaduan', this.pengaduan_ini.id_pengaduan)
+        data.append('isi_laporan', this.pengaduan_ini.isi_laporan)
+   //     data.append('img', this.pengaduan_ini.foto)
+        data.append('foto', this.img)
+
+        axios.post('/api/pengaduan/update',data,config)
+        this.get_pengaduan()
+    },
+    hapus: function(data,i) {
+        let a = new FormData()
+        a.append('id_pengaduan',data.id_pengaduan)
+        a.append('foto',data.foto)
+        axios.post('/api/pengaduan/delete',a)
+        this.pengaduans.data.splice(i,1)
+        this.get_pengaduan();
+    },
+    buatpengaduan: function() {
+        let config = {
+            header : {
+                'Content-Type' : 'image/png'
+            }
+        }
+        let data = new FormData()
+        data.append('isi_laporan', this.pengaduan_ini.isi_laporan)
+        data.append('foto', this.img)
+
+        axios.post('/api/pengaduan/buat',data,config)
+        this.get_pengaduan();
+        this.pengaduan_ini = []
+        this.img = []
+        this.preview_img = []
+    },
+    buat: function() {
+    this.pengaduan_ini = []
+    this.img = []
+    this.preview_img = []
       $("#modalpengaduan").modal();
     },
     onPreview(e) {

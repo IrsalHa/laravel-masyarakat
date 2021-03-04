@@ -2061,10 +2061,105 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       pengaduans: [],
+      pengaduan_ini: [],
       user_ini: [],
       img: null,
       preview_img: null
@@ -2075,7 +2170,53 @@ __webpack_require__.r(__webpack_exports__);
     this.get_user_ini();
   },
   methods: {
+    show: function show(pengaduan) {
+      this.preview_img = [];
+      $("#modalshow").modal();
+      this.pengaduan_ini = pengaduan;
+      this.get_pengaduan();
+    },
+    updatepengaduan: function updatepengaduan() {
+      var config = {
+        header: {
+          'Content-Type': 'image/png'
+        }
+      };
+      var data = new FormData();
+      data.append('id_pengaduan', this.pengaduan_ini.id_pengaduan);
+      data.append('isi_laporan', this.pengaduan_ini.isi_laporan); //     data.append('img', this.pengaduan_ini.foto)
+
+      data.append('foto', this.img);
+      axios.post('/api/pengaduan/update', data, config);
+      this.get_pengaduan();
+    },
+    hapus: function hapus(data, i) {
+      var a = new FormData();
+      a.append('id_pengaduan', data.id_pengaduan);
+      a.append('foto', data.foto);
+      axios.post('/api/pengaduan/delete', a);
+      this.pengaduans.data.splice(i, 1);
+      this.get_pengaduan();
+    },
+    buatpengaduan: function buatpengaduan() {
+      var config = {
+        header: {
+          'Content-Type': 'image/png'
+        }
+      };
+      var data = new FormData();
+      data.append('isi_laporan', this.pengaduan_ini.isi_laporan);
+      data.append('foto', this.img);
+      axios.post('/api/pengaduan/buat', data, config);
+      this.get_pengaduan();
+      this.pengaduan_ini = [];
+      this.img = [];
+      this.preview_img = [];
+    },
     buat: function buat() {
+      this.pengaduan_ini = [];
+      this.img = [];
+      this.preview_img = [];
       $("#modalpengaduan").modal();
     },
     onPreview: function onPreview(e) {
@@ -37848,7 +37989,15 @@ var render = function() {
                       ])
                     : _c("td", [_vm._v(_vm._s(pengaduan.isi_laporan))]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(pengaduan.foto))]),
+                  _c("td", [
+                    _c("img", {
+                      staticStyle: {
+                        "max-width": "100px",
+                        "max-height": "100px"
+                      },
+                      attrs: { src: pengaduan.foto }
+                    })
+                  ]),
                   _vm._v(" "),
                   pengaduan.status == "0"
                     ? _c("td", [_vm._v("Belum")])
@@ -37863,7 +38012,33 @@ var render = function() {
                         )
                       ]),
                   _vm._v(" "),
-                  _vm._m(1, true)
+                  _c("td", [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-success m-1 btn-sm",
+                        on: {
+                          click: function($event) {
+                            return _vm.show(pengaduan)
+                          }
+                        }
+                      },
+                      [_vm._v("\n                Show\n              ")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger m-1 btn-sm",
+                        on: {
+                          click: function($event) {
+                            return _vm.hapus(pengaduan, index)
+                          }
+                        }
+                      },
+                      [_vm._v("\n                Delete\n              ")]
+                    )
+                  ])
                 ]
               )
             }),
@@ -37891,17 +38066,43 @@ var render = function() {
           { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(2),
+              _vm._m(1),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("form", [
-                  _vm._m(3),
+                  _vm._m(2),
                   _vm._v(" "),
-                  _vm._m(4),
+                  _c("div", { staticClass: "form-group-row" }, [
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.pengaduan_ini.isi_laporan,
+                          expression: "pengaduan_ini.isi_laporan"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { name: "isi_laporan", rows: "3" },
+                      domProps: { value: _vm.pengaduan_ini.isi_laporan },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.pengaduan_ini,
+                            "isi_laporan",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    })
+                  ]),
                   _vm._v(" "),
                   _c("br"),
                   _vm._v(" "),
-                  _vm._m(5),
+                  _vm._m(3),
                   _vm._v(" "),
                   _c("div", { staticClass: "form-group-row" }, [
                     _vm.preview_img
@@ -37924,7 +38125,193 @@ var render = function() {
                 ])
               ]),
               _vm._v(" "),
-              _vm._m(6)
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button", "data-dismiss": "modal" }
+                  },
+                  [_vm._v("\n            Close\n          ")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.buatpengaduan()
+                      }
+                    }
+                  },
+                  [_vm._v("\n            Create\n          ")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "modalshow",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "exampleModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c(
+                  "h5",
+                  {
+                    staticClass: "modal-title",
+                    attrs: { id: "exampleModalLabel" }
+                  },
+                  [
+                    _vm._v(
+                      "\n          Pengaduan " +
+                        _vm._s(_vm.pengaduan_ini.tgl_pengaduan) +
+                        "\n          "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _vm._m(4)
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("form", [
+                  _vm._m(5),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group-row" }, [
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.pengaduan_ini.isi_laporan,
+                          expression: "pengaduan_ini.isi_laporan"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { name: "isi_laporan", rows: "3" },
+                      domProps: { value: _vm.pengaduan_ini.isi_laporan },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.pengaduan_ini,
+                            "isi_laporan",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("br"),
+                  _vm._v(" "),
+                  _vm._m(6),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group-row" }, [
+                    _vm.preview_img != 0
+                      ? _c("img", {
+                          staticStyle: {
+                            "max-width": "100px",
+                            "max-height": "100px"
+                          },
+                          attrs: { src: _vm.preview_img }
+                        })
+                      : _c("img", {
+                          staticStyle: {
+                            "max-width": "100px",
+                            "max-height": "100px"
+                          },
+                          attrs: { src: _vm.pengaduan_ini.foto }
+                        })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group-row" }, [
+                    _c("input", {
+                      attrs: { type: "file" },
+                      on: { change: _vm.onPreview }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("br"),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group-row" }, [
+                    _vm.pengaduan_ini.status && _vm.pengaduan_ini.status != "0"
+                      ? _c("label", [
+                          _vm._v(
+                            "Status: " +
+                              _vm._s(
+                                _vm.pengaduan_ini.status
+                                  .charAt(0)
+                                  .toUpperCase() +
+                                  _vm.pengaduan_ini.status.substring(1)
+                              )
+                          )
+                        ])
+                      : _c("label", [_vm._v("Status: Belum")])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group-row" }, [
+                    _vm.pengaduan_ini.tanggapan == null
+                      ? _c("label", [_vm._v("Tanggapan: Belum Ada")])
+                      : _c("label", [
+                          _vm._v(
+                            "TGL Tanggapan: " +
+                              _vm._s(_vm.pengaduan_ini.tgl_tanggapan)
+                          ),
+                          _c("br"),
+                          _vm._v(
+                            "Tanggapan: " + _vm._s(_vm.pengaduan_ini.tanggapan)
+                          )
+                        ])
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button", "data-dismiss": "modal" }
+                  },
+                  [_vm._v("\n            Close\n          ")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.updatepengaduan()
+                      }
+                    }
+                  },
+                  [_vm._v("\n            Save Changes\n          ")]
+                )
+              ])
             ])
           ]
         )
@@ -37957,25 +38344,11 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("button", { staticClass: "btn btn-success m-1 btn-sm" }, [
-        _vm._v("Show")
-      ]),
-      _vm._v(" "),
-      _c("button", { staticClass: "btn btn-danger m-1 btn-sm" }, [
-        _vm._v("Delete")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
       _c(
         "h5",
         { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
-        [_vm._v("Buat Pengaduan")]
+        [_vm._v("\n            Buat Pengaduan\n          ")]
       ),
       _vm._v(" "),
       _c(
@@ -38005,10 +38378,32 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "form-group-row" }, [
-      _c("textarea", {
-        staticClass: "form-control",
-        attrs: { name: "isi_laporan", rows: "3" }
-      })
+      _c("label", [_vm._v("Foto")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group-row" }, [
+      _c("label", [_vm._v("Isi Laporan")])
     ])
   },
   function() {
@@ -38017,27 +38412,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "form-group-row" }, [
       _c("label", [_vm._v("Foto")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-secondary",
-          attrs: { type: "button", "data-dismiss": "modal" }
-        },
-        [_vm._v("\n            Close\n          ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-primary", attrs: { type: "button" } },
-        [_vm._v("Save changes")]
-      )
     ])
   }
 ]

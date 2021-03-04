@@ -9,5 +9,7 @@ class Tanggapan extends Model
     protected $table = 'tanggapan';
     protected $primaryKey = 'id_tanggapan';
     protected $guarded = [];
-    protected $hidden = ['password'];
+    // protected $hidden = [
+    //     'id_pengaduan'
+    // ];
 }

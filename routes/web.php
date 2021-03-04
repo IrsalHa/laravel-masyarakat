@@ -23,6 +23,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['prefix' => 'api'], function(){
     Route::get('/pengaduan/get', 'PengaduanController@index')->name('pengaduan.index');
     Route::get('/user/ini', 'UserController@get_ini')->name('user.ini');
+    Route::post('/pengaduan/update', 'PengaduanController@update')->name('pengaduan.update');
+    Route::post('/pengaduan/delete', 'PengaduanController@delete')->name('pengaduan.delete');
+    Route::post('/pengaduan/buat', 'PengaduanController@buat')->name('pengaduan.buat');
 });
 
 Route::group(['prefix' => 'petugas'], function(){

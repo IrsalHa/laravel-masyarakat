@@ -9,4 +9,5 @@ class Pengaduan extends Model
     protected $table = 'pengaduan';
     protected $primaryKey = 'id_pengaduan';
     protected $guarded = [];
+    
 }
