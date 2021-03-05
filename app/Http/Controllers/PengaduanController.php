@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use DB;
 use Carbon\Carbon;
 use Auth;
+use App\Pengaduan;
 use Illuminate\Http\Request;
 
 class PengaduanController extends Controller
@@ -47,7 +48,7 @@ class PengaduanController extends Controller
             $tujuan_upload = 'data_file';
             $fileName = Carbon::now()->timestamp.'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $file->move($tujuan_upload,$fileName);
-    
+            unlink(public_path().Pengaduan::find($request->id_pengaduan)->value('foto'));
             $data = DB::table('pengaduan')
                     ->where('pengaduan.id_pengaduan','=',$request->id_pengaduan)
                     ->update(['isi_laporan' => $request->isi_laporan,
