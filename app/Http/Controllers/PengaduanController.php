@@ -9,6 +9,28 @@ use Illuminate\Http\Request;
 
 class PengaduanController extends Controller
 {
+
+    public function index_all(){
+        $data = DB::table('pengaduan')
+        ->leftjoin('masyarakat','masyarakat.nik','=','pengaduan.nik')
+        ->leftjoin('tanggapan','tanggapan.id_pengaduan','=','pengaduan.id_pengaduan')
+        ->leftjoin('petugas','petugas.id_petugas','=','tanggapan.id_petugas')
+        ->select('pengaduan.*',
+        'masyarakat.nama',
+        'tanggapan.id_tanggapan',
+        'tanggapan.tgl_tanggapan',
+        'tanggapan.tanggapan',
+        'petugas.nama_petugas',
+        'petugas.id_petugas')
+        ->orderBy('pengaduan.tgl_pengaduan','DESC')
+        ->get();
+
+        return response()->json([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
+
     public function index(){
         $data = DB::table('pengaduan')
                 ->where('pengaduan.nik','=',Auth::guard('web')->user()->nik)
@@ -20,6 +42,7 @@ class PengaduanController extends Controller
                 'tanggapan.tanggapan',
                 'petugas.nama_petugas',
                 'petugas.id_petugas')
+                ->orderBy('pengaduan.tgl_pengaduan','DESC')
                 ->get();
 
         return response()->json([

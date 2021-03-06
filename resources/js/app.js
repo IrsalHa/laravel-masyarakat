@@ -7,6 +7,17 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+import VueSweetalert2 from 'vue-sweetalert2';
+import DataTable from "vue-materialize-datatable";
+import JsonExcel from "vue-json-excel";
+import pdf from 'vue-pdf'
+import jsPDF from 'jspdf'
+
+import 'sweetalert2/dist/sweetalert2.min.css';
+import Vue from 'vue';
+Vue.use(VueSweetalert2);
+Vue.use(DataTable)
+Vue.use(jsPDF)
 
 /**
  * The following block of code may be used to automatically register your
@@ -18,7 +29,8 @@ window.Vue = require('vue');
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
+Vue.component('laporan-component', require('./components/LaporanComponent.vue').default);
+Vue.component("downloadExcel", JsonExcel);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('pengaduan-component', require('./components/PengaduanComponent.vue').default);
 /**

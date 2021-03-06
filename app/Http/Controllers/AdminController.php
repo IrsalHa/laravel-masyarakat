@@ -10,8 +10,8 @@ class AdminController extends Controller
         $this->middleware('auth:petugas');
     }
     public function index(){
-        if(Auth::guard('petugas')->user()->level == 'admin'){
-            return view('admin');
+        if(Auth::guard('petugas')->user()->level == 'petugas'){
+            return view('petugas');
         }
         return view('dashboard');
     }

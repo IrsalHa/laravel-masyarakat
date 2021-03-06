@@ -33,7 +33,13 @@
                 {{ pengaduan.isi_laporan.substring(0, 20) + "...." }}
               </td>
               <td v-else>{{ pengaduan.isi_laporan }}</td>
-              <td><img :src="pengaduan.foto" style="max-width:100px;max-height:100px;"> </td>
+              <td>
+                <img
+                  :src="getImg(pengaduan.foto)"
+                  v-bind:alt="pengaduan.foto"
+                  style="max-width: 100px; max-height: 100px"
+                />
+              </td>
               <td v-if="pengaduan.status == '0'">Belum</td>
               <td v-else>
                 {{
@@ -42,10 +48,16 @@
                 }}
               </td>
               <td>
-                <button @click="show(pengaduan)" class="btn btn-success m-1 btn-sm">
+                <button
+                  @click="show(pengaduan)"
+                  class="btn btn-success m-1 btn-sm"
+                >
                   Show
                 </button>
-                <button @click="hapus(pengaduan,index)" class="btn btn-danger m-1 btn-sm">
+                <button
+                  @click="hapus(pengaduan, index)"
+                  class="btn btn-danger m-1 btn-sm"
+                >
                   Delete
                 </button>
               </td>
@@ -67,9 +79,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
-              Buat Pengaduan
-            </h5>
+            <h5 class="modal-title" id="exampleModalLabel">Buat Pengaduan</h5>
             <button
               type="button"
               class="close"
@@ -100,7 +110,7 @@
                 <img
                   v-if="preview_img"
                   :src="preview_img"
-                  style="max-width: 100px; max-height: 100px;"
+                  style="max-width: 100px; max-height: 100px:background-size: cover;"
                 />
               </div>
               <div class="form-group-row">
@@ -116,7 +126,11 @@
             >
               Close
             </button>
-            <button @click="buatpengaduan()" type="button" class="btn btn-primary">
+            <button
+              @click="buatpengaduan()"
+              type="button"
+              class="btn btn-primary"
+            >
               Create
             </button>
           </div>
@@ -125,7 +139,7 @@
     </div>
     <!-- Modal Create -->
 
-        <!-- Modal Show -->
+    <!-- Modal Show -->
     <div
       class="modal fade"
       id="modalshow"
@@ -138,7 +152,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
-            Pengaduan {{ pengaduan_ini.tgl_pengaduan }}
+              Pengaduan {{ pengaduan_ini.tgl_pengaduan }}
             </h5>
             <button
               type="button"
@@ -170,25 +184,37 @@
                 <img
                   v-if="preview_img != 0"
                   :src="preview_img"
-                  style="max-width: 100px; max-height: 100px;"
+                  style="max-width: 100px; max-height: 100px"
                 />
                 <img
                   v-else
                   :src="pengaduan_ini.foto"
-                  style="max-width: 100px; max-height: 100px;"
+                  style="max-width: 100px; max-height: 100px"
                 />
               </div>
               <div class="form-group-row">
                 <input @change="onPreview" type="file" />
               </div>
-              <br>
-               <div class="form-group-row">
-                <label v-if="pengaduan_ini.status && pengaduan_ini.status != '0' ">Status: {{pengaduan_ini.status.charAt(0).toUpperCase() + pengaduan_ini.status.substring(1)}}</label>
+              <br />
+              <div class="form-group-row">
+                <label
+                  v-if="pengaduan_ini.status && pengaduan_ini.status != '0'"
+                  >Status:
+                  {{
+                    pengaduan_ini.status.charAt(0).toUpperCase() +
+                    pengaduan_ini.status.substring(1)
+                  }}</label
+                >
                 <label v-else>Status: Belum</label>
               </div>
-             <div class="form-group-row">
-              <label v-if="pengaduan_ini.tanggapan == null">Tanggapan: Belum Ada</label>
-              <label v-else>TGL Tanggapan: {{ pengaduan_ini.tgl_tanggapan }}<br>Tanggapan: {{ pengaduan_ini.tanggapan }}</label>
+              <div class="form-group-row">
+                <label v-if="pengaduan_ini.tanggapan == null"
+                  >Tanggapan: Belum Ada</label
+                >
+                <label v-else
+                  >TGL Tanggapan: {{ pengaduan_ini.tgl_tanggapan
+                  }}<br />Tanggapan: {{ pengaduan_ini.tanggapan }}</label
+                >
               </div>
             </form>
           </div>
@@ -200,7 +226,11 @@
             >
               Close
             </button>
-            <button @click="updatepengaduan()" type="button" class="btn btn-primary">
+            <button
+              @click="updatepengaduan()"
+              type="button"
+              class="btn btn-primary"
+            >
               Save Changes
             </button>
           </div>
@@ -208,7 +238,6 @@
       </div>
     </div>
     <!-- Modal Show -->
-
   </div>
 </template>
 
@@ -217,7 +246,7 @@ export default {
   data() {
     return {
       pengaduans: [],
-     pengaduan_ini: [],
+      pengaduan_ini: [],
       user_ini: [],
       img: null,
       preview_img: null,
@@ -228,55 +257,93 @@ export default {
     this.get_user_ini();
   },
   methods: {
-    show: function(pengaduan){
-        this.preview_img = []
-        $("#modalshow").modal()
-        this.pengaduan_ini = pengaduan
-        this.get_pengaduan();
+    getImg: (pic) => {
+      return pic;
     },
-    updatepengaduan: function(){
+    show: function (pengaduan) {
+      this.preview_img = [];
+      $("#modalshow").modal();
+      this.pengaduan_ini = pengaduan;
+      this.get_pengaduan();
+    },
+    updatepengaduan: function () {
+      this.$swal.fire({
+        title: "Do you want to save the changes?",
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: `Save`,
+        denyButtonText: `Don't save`,
+      }).then((result) => {
+        if (result.isConfirmed) {
           let config = {
-            header : {
-                'Content-Type' : 'image/png'
-            }
-        }
-        let data = new FormData()
-        data.append('id_pengaduan', this.pengaduan_ini.id_pengaduan)
-        data.append('isi_laporan', this.pengaduan_ini.isi_laporan)
-   //     data.append('img', this.pengaduan_ini.foto)
-        data.append('foto', this.img)
+            header: {
+              "Content-Type": "image/png",
+            },
+          };
+          let data = new FormData();
+          data.append("id_pengaduan", this.pengaduan_ini.id_pengaduan);
+          data.append("isi_laporan", this.pengaduan_ini.isi_laporan);
+          //data.append('img', this.pengaduan_ini.foto)
+          data.append("foto", this.img);
 
-        axios.post('/api/pengaduan/update',data,config)
-        this.get_pengaduan()
-    },
-    hapus: function(data,i) {
-        let a = new FormData()
-        a.append('id_pengaduan',data.id_pengaduan)
-        a.append('foto',data.foto)
-        axios.post('/api/pengaduan/delete',a)
-        this.pengaduans.data.splice(i,1)
-        this.get_pengaduan();
-    },
-    buatpengaduan: function() {
-        let config = {
-            header : {
-                'Content-Type' : 'image/png'
-            }
+          axios.post("/api/pengaduan/update", data, config).then((response) => {
+            this.get_pengaduan();
+            $("#modalshow").modal("hide");
+          });
+          this.$swal.fire("Saved!", "", "success");
+        } else if (result.isDenied) {
+          this.$swal.fire("Changes are not saved", "", "info");
         }
-        let data = new FormData()
-        data.append('isi_laporan', this.pengaduan_ini.isi_laporan)
-        data.append('foto', this.img)
-
-        axios.post('/api/pengaduan/buat',data,config)
-        this.get_pengaduan();
-        this.pengaduan_ini = []
-        this.img = []
-        this.preview_img = []
+      });
     },
-    buat: function() {
-    this.pengaduan_ini = []
-    this.img = []
-    this.preview_img = []
+    hapus: function (data, i) {
+      this.$swal
+        .fire({
+          title: "Ingin Menghapus?",
+          showDenyButton: true,
+          showCancelButton: false,
+          confirmButtonText: `Save`,
+          denyButtonText: `Don't save`,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            let a = new FormData();
+            a.append("id_pengaduan", data.id_pengaduan);
+            a.append("foto", data.foto);
+            axios.post("/api/pengaduan/delete", a).then((response) => {
+              this.pengaduans.data.splice(i, 1);
+              this.get_pengaduan();
+            });
+            this.$swal.fire("Saved!", "", "success");
+          } else if (result.isDenied) {
+            this.$swal.fire("Changes are not saved", "", "info");
+          }
+        });
+    },
+    buatpengaduan: function () {
+      let config = {
+        header: {
+          "Content-Type": "image/png",
+        },
+      };
+      let data = new FormData();
+      data.append("isi_laporan", this.pengaduan_ini.isi_laporan);
+      data.append("foto", this.img);
+
+      axios.post("/api/pengaduan/buat", data, config).then((response) => {
+        $("#modalpengaduan").modal("hide");
+        this.get_pengaduan();
+        this.$swal.fire("Sukses Create!");
+      });
+      this.get_pengaduan();
+      this.pengaduan_ini = [];
+      this.img = [];
+      this.preview_img = [];
+    },
+    buat: function () {
+      this.pengaduan_ini = [];
+      this.img = [];
+      this.preview_img = [];
       $("#modalpengaduan").modal();
     },
     onPreview(e) {

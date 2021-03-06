@@ -20,13 +20,19 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['prefix' => 'api'], function(){
+Route::group(['prefix' => 'api/petugas','middleware' => 'auth:petugas'], function(){
+    Route::get('/pengaduan/get', 'PengaduanController@index_all')->name('pengaduan.index.all');
+});
+
+Route::group(['prefix' => 'api','middleware' => 'auth:web'], function(){
     Route::get('/pengaduan/get', 'PengaduanController@index')->name('pengaduan.index');
     Route::get('/user/ini', 'UserController@get_ini')->name('user.ini');
     Route::post('/pengaduan/update', 'PengaduanController@update')->name('pengaduan.update');
     Route::post('/pengaduan/delete', 'PengaduanController@delete')->name('pengaduan.delete');
     Route::post('/pengaduan/buat', 'PengaduanController@buat')->name('pengaduan.buat');
 });
+
+
 
 Route::group(['prefix' => 'petugas'], function(){
     Route::post('/verif/user', 'UserController@verif')->name('petugas.user.verif');
