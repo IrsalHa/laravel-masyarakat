@@ -2146,19 +2146,174 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {},
   data: function data() {
     return {
-      pengaduans: []
+      pengaduans: [],
+      pengaduan_ini: [],
+      preview_img: {},
+      erro: []
     };
   },
   mounted: function mounted() {
     this.get_pengaduan();
   },
   methods: {
+    updatepengaduan: function updatepengaduan() {
+      var _this = this;
+
+      this.$swal.fire({
+        title: 'Do you want to save the changes?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Save",
+        denyButtonText: "Don't save"
+      }).then(function (result) {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          var data = new FormData();
+          data.append('id_pengaduan', _this.pengaduan_ini.id_pengaduan);
+          data.append('status', _this.pengaduan_ini.status);
+          data.append('tanggapan', _this.pengaduan_ini.tanggapan);
+          data.append('id_tanggapan', _this.pengaduan_ini.id_tanggapan);
+          axios.post('/api/petugas/tanggapan/create', data).then(function (response) {
+            _this.get_pengaduan();
+
+            _this.erro = [];
+          })["catch"](function (error) {
+            _this.erro = error.response.data.errors.tanggapan;
+            console.log("ERRRR:: ", error.response.data.errors);
+          });
+          $("#modalshow").modal('hide');
+
+          _this.$swal.fire('Saved!', '', 'success');
+        } else if (result.isDenied) {
+          _this.$swal.fire('Changes are not saved', '', 'info');
+        }
+      });
+    },
+    apus: function apus(pengaduan, index) {
+      var _this2 = this;
+
+      this.$swal.fire({
+        title: 'Do you want to save the changes?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Save",
+        denyButtonText: "Don't save"
+      }).then(function (result) {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          var data = new FormData();
+          data.append('id_pengaduan', pengaduan.id_pengaduan);
+          data.append('id_tanggapan', pengaduan.id_tanggapan);
+          axios.post('/api/petugas/tanggapan/delete', data).then(function (response) {
+            _this2.get_pengaduan();
+          });
+
+          _this2.$swal.fire('Saved!', '', 'success');
+        } else if (result.isDenied) {
+          _this2.$swal.fire('Changes are not saved', '', 'info');
+        }
+      });
+    },
+    show: function show(pengaduan) {
+      this.pengaduan_ini = [];
+      this.preview_img = [];
+      $('select[name=stat]').val(pengaduan.status);
+      $("#modalshow").modal();
+      this.pengaduan_ini = pengaduan;
+      this.get_pengaduan();
+    },
     copy: function copy() {
       var dummy = document.createElement("input"); //dummy.style.display = 'none';
 
@@ -2178,7 +2333,7 @@ __webpack_require__.r(__webpack_exports__);
       var doc = new jspdf__WEBPACK_IMPORTED_MODULE_0__["default"]();
       var img = document.getElementById('img'); //  doc.addImage(img.src);
 
-      var col = ["No", "Pelapor", "NIK", "Isi Laporan", "Foto", "Status", "TGL Lapor"];
+      var col = ["No", "Id Pengaduan", "Pelapor", "NIK", "Isi Laporan", "Foto", "Status", "TGL Lapor"];
       var col1 = ["No", "Id Pengaduan", "Tanggapan", "Nama Petugas", "TGL Tanggapan"];
       var rows = [];
       var rows1 = [];
@@ -2186,7 +2341,7 @@ __webpack_require__.r(__webpack_exports__);
       var i = 1;
       var ii = 1;
       ittem.forEach(function (e) {
-        var temp = [i++, e.nama, e.nik, e.isi_laporan, e.foto, e.status, e.tgl_pengaduan];
+        var temp = [i++, e.id_pengaduan, e.nama, e.nik, e.isi_laporan, e.foto, e.status, e.tgl_pengaduan];
         var temp1 = [ii++, e.id_pengaduan, e.tanggapan, e.nama_petugas, e.tgl_tanggapan];
         rows.push(temp);
         rows1.push(temp1);
@@ -2205,7 +2360,7 @@ __webpack_require__.r(__webpack_exports__);
       //window.print()
       // document.getElementById("#renderme").print()
       var doc = new jspdf__WEBPACK_IMPORTED_MODULE_0__["default"]();
-      var col = ["No", "Pelapor", "NIK", "Isi Laporan", "Foto", "Status", "TGL Lapor"];
+      var col = ["No", "Id Pengaduan", "Pelapor", "NIK", "Isi Laporan", "Foto", "Status", "TGL Lapor"];
       var col1 = ["No", "Id Pengaduan", "Tanggapan", "Nama Petugas", "TGL Tanggapan"];
       var rows = [];
       var rows1 = [];
@@ -2213,7 +2368,7 @@ __webpack_require__.r(__webpack_exports__);
       var i = 1;
       var ii = 1;
       ittem.forEach(function (e) {
-        var temp = [i++, e.nama, e.nik, e.isi_laporan, e.foto, e.status, e.tgl_pengaduan];
+        var temp = [i++, e.id_pengaduan, e.nama, e.nik, e.isi_laporan, e.foto, e.status, e.tgl_pengaduan];
         var temp1 = [ii++, e.id_pengaduan, e.tanggapan, e.nama_petugas, e.tgl_tanggapan];
         rows.push(temp);
         rows1.push(temp1);
@@ -2228,11 +2383,11 @@ __webpack_require__.r(__webpack_exports__);
       doc.output('dataurlnewwindow'); //    doc.save('Test.pdf');
     },
     get_pengaduan: function get_pengaduan() {
-      var _this = this;
+      var _this3 = this;
 
       axios.get('/api/petugas/pengaduan/get').then(function (response) {
         console.log(response.data);
-        _this.pengaduans = response.data;
+        _this3.pengaduans = response.data;
       });
     },
     getImg: function getImg(foto) {
@@ -88244,59 +88399,81 @@ var render = function() {
               _c(
                 "tbody",
                 _vm._l(_vm.pengaduans.data, function(pengaduan, index) {
-                  return _c(
-                    "tr",
-                    _vm._b({}, "tr", _vm.pengaduans.data.id_pengaduan, false),
-                    [
-                      _c("td", [_vm._v(_vm._s(index + 1))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(pengaduan.nama))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(pengaduan.tgl_pengaduan))]),
-                      _vm._v(" "),
-                      pengaduan.isi_laporan.length > 20
-                        ? _c("td", [
-                            _vm._v(
-                              "\n                " +
-                                _vm._s(
-                                  pengaduan.isi_laporan.substring(0, 20) +
-                                    "...."
-                                ) +
-                                "\n              "
-                            )
-                          ])
-                        : _c("td", [_vm._v(_vm._s(pengaduan.isi_laporan))]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c("img", {
-                          staticStyle: {
-                            "max-width": "100px",
-                            "max-height": "100px"
-                          },
-                          attrs: {
-                            id: "img",
-                            src: _vm.getImg(pengaduan.foto),
-                            alt: pengaduan.foto
+                  return _c("tr", { key: pengaduan.id_pengaduan }, [
+                    _c("td", [_vm._v(_vm._s(index + 1))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(pengaduan.nama))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(pengaduan.tgl_pengaduan))]),
+                    _vm._v(" "),
+                    pengaduan.isi_laporan.length > 20
+                      ? _c("td", [
+                          _vm._v(
+                            "\n                " +
+                              _vm._s(
+                                pengaduan.isi_laporan.substring(0, 20) + "...."
+                              ) +
+                              "\n              "
+                          )
+                        ])
+                      : _c("td", [_vm._v(_vm._s(pengaduan.isi_laporan))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c("img", {
+                        staticStyle: {
+                          "max-width": "100px",
+                          "max-height": "100px"
+                        },
+                        attrs: {
+                          id: "img",
+                          src: _vm.getImg(pengaduan.foto),
+                          alt: pengaduan.foto
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    pengaduan.status == "0"
+                      ? _c("td", [_vm._v("Belum")])
+                      : _c("td", [
+                          _vm._v(
+                            "\n                " +
+                              _vm._s(
+                                pengaduan.status.charAt(0).toUpperCase() +
+                                  pengaduan.status.substring(1)
+                              ) +
+                              "\n              "
+                          )
+                        ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success m-1 btn-sm",
+                          on: {
+                            click: function($event) {
+                              return _vm.show(pengaduan)
+                            }
                           }
-                        })
-                      ]),
+                        },
+                        [_vm._v("\n                  Show\n                ")]
+                      ),
                       _vm._v(" "),
-                      pengaduan.status == "0"
-                        ? _c("td", [_vm._v("Belum")])
-                        : _c("td", [
-                            _vm._v(
-                              "\n                " +
-                                _vm._s(
-                                  pengaduan.status.charAt(0).toUpperCase() +
-                                    pengaduan.status.substring(1)
-                                ) +
-                                "\n              "
-                            )
-                          ]),
-                      _vm._v(" "),
-                      _vm._m(1, true)
-                    ]
-                  )
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger m-1 btn-sm",
+                          attrs: { disabled: pengaduan.id_tanggapan == null },
+                          on: {
+                            click: function($event) {
+                              return _vm.apus(pengaduan, index)
+                            }
+                          }
+                        },
+                        [_vm._v("\n                  Delete\n                ")]
+                      )
+                    ])
+                  ])
                 }),
                 0
               )
@@ -88304,7 +88481,219 @@ var render = function() {
           )
         ]
       )
-    ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "modalshow",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "exampleModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c(
+              "div",
+              { staticClass: "modal-content" },
+              [
+                _c("div", { staticClass: "modal-header" }, [
+                  _c(
+                    "h5",
+                    {
+                      staticClass: "modal-title",
+                      attrs: { id: "exampleModalLabel" }
+                    },
+                    [
+                      _vm._v(
+                        "\n              Pengaduan " +
+                          _vm._s(_vm.pengaduan_ini.tgl_pengaduan) +
+                          "\n            "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _vm._m(1)
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.erro, function(error, index) {
+                  return _vm.erro != 0
+                    ? _c(
+                        "div",
+                        {
+                          key: _vm.erro,
+                          staticClass: "m-3 alert alert-primary",
+                          attrs: { role: "alert" }
+                        },
+                        [
+                          _vm._v(
+                            "\n            " + _vm._s(error) + "\n            "
+                          )
+                        ]
+                      )
+                    : _vm._e()
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("form", [
+                    _vm._m(2),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group-row" }, [
+                      _vm._v(
+                        "\n                " +
+                          _vm._s(_vm.pengaduan_ini.isi_laporan) +
+                          "\n              "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
+                    _vm._m(3),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group-row" }, [
+                      _vm.preview_img != 0
+                        ? _c("img", {
+                            staticStyle: {
+                              "max-width": "100px",
+                              "max-height": "100px"
+                            },
+                            attrs: { src: _vm.preview_img }
+                          })
+                        : _c("img", {
+                            staticStyle: {
+                              "max-width": "100px",
+                              "max-height": "100px"
+                            },
+                            attrs: { src: _vm.pengaduan_ini.foto }
+                          })
+                    ]),
+                    _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group-row" }, [
+                      _c("label", [_vm._v("Status: ")]),
+                      _vm._v(" "),
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.pengaduan_ini.status,
+                              expression: "pengaduan_ini.status"
+                            }
+                          ],
+                          staticClass: "form-control selectpicker mb-2",
+                          attrs: {
+                            name: "stat",
+                            "aria-label": "Default select example"
+                          },
+                          on: {
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.$set(
+                                _vm.pengaduan_ini,
+                                "status",
+                                $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              )
+                            }
+                          }
+                        },
+                        [
+                          _c("option", { attrs: { value: "0" } }, [
+                            _vm._v("Belum")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "proses" } }, [
+                            _vm._v("Proses")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "selesai" } }, [
+                            _vm._v("Selesai")
+                          ])
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group-row" }, [
+                      _c("label", [_vm._v("Tanggapan: ")]),
+                      _vm._v(" "),
+                      _c("textarea", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.pengaduan_ini.tanggapan,
+                            expression: "pengaduan_ini.tanggapan"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        domProps: { value: _vm.pengaduan_ini.tanggapan },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.pengaduan_ini,
+                              "tanggapan",
+                              $event.target.value
+                            )
+                          }
+                        }
+                      })
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: { type: "button", "data-dismiss": "modal" }
+                    },
+                    [_vm._v("\n              Close\n            ")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.updatepengaduan()
+                        }
+                      }
+                    },
+                    [_vm._v("\n              Save Changes\n            ")]
+                  )
+                ])
+              ],
+              2
+            )
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -88334,14 +88723,33 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("button", { staticClass: "btn btn-success m-1 btn-sm" }, [
-        _vm._v("\n                  Show\n                ")
-      ]),
-      _vm._v(" "),
-      _c("button", { staticClass: "btn btn-danger m-1 btn-sm" }, [
-        _vm._v("\n                  Delete\n                ")
-      ])
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group-row" }, [
+      _c("label", [_vm._v("Isi Laporan:")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group-row" }, [
+      _c("label", [_vm._v("Foto")])
     ])
   }
 ]

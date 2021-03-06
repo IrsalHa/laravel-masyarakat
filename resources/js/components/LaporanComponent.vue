@@ -38,7 +38,7 @@
           <tbody>
             <tr
               v-for="(pengaduan, index) in pengaduans.data"
-              v-bind="pengaduans.data.id_pengaduan"
+              :key="pengaduan.id_pengaduan"
             >
             <td>{{index + 1}}</td>
              <td>{{ pengaduan.nama }}</td>
@@ -64,13 +64,14 @@
               </td>
               <td>
                 <button
-                
+                    @click="show(pengaduan)"
                   class="btn btn-success m-1 btn-sm"
                 >
                   Show
                 </button>
                 <button
-             
+                @click="apus(pengaduan,index)"
+                :disabled="pengaduan.id_tanggapan == null"
                   class="btn btn-danger m-1 btn-sm"
                 >
                   Delete
@@ -81,7 +82,92 @@
         </table>
       </div>
     </div>
-    
+        <!-- Modal Show -->
+    <div
+      class="modal fade"
+      id="modalshow"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Pengaduan {{ pengaduan_ini.tgl_pengaduan }}
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div v-if="erro != 0"  v-for="(error, index) in erro" v-bind:key="erro" class="m-3 alert alert-primary" role="alert">
+            {{ error }}
+            </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group-row">
+                <label>Isi Laporan:</label>
+              </div>
+              <div class="form-group-row">
+                {{ pengaduan_ini.isi_laporan }}
+              </div>
+              <br />
+              <div class="form-group-row">
+                <label>Foto</label>
+              </div>
+              <div class="form-group-row">
+                <img
+                  v-if="preview_img != 0"
+                  :src="preview_img"
+                  style="max-width: 100px; max-height: 100px"
+                />
+                <img
+                  v-else
+                  :src="pengaduan_ini.foto"
+                  style="max-width: 100px; max-height: 100px"
+                />
+              </div>
+              <br />
+              <div class="form-group-row">
+                <label>Status: </label>
+        <select v-model="pengaduan_ini.status" name="stat" class="form-control selectpicker mb-2" aria-label="Default select example">
+        <option value="0">Belum</option>
+        <option value="proses">Proses</option>
+        <option value="selesai">Selesai</option>
+        </select>
+              </div>
+              <div class="form-group-row">
+                <label >Tanggapan: </label>
+               <textarea class="form-control" v-model="pengaduan_ini.tanggapan"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              @click="updatepengaduan()"
+              type="button"
+              class="btn btn-primary"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Show -->
   </div>
 </template>
 
@@ -97,14 +183,79 @@ export default {
     data(){
         return {
             pengaduans: [],
+            pengaduan_ini: [],
+            preview_img: {},
+            erro: []
         }
     },
     mounted(){
         this.get_pengaduan()
     },
     methods: {
+    updatepengaduan(){
+        this.$swal.fire({
+        title: 'Do you want to save the changes?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: `Save`,
+        denyButtonText: `Don't save`,
+        }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            let data = new FormData()
+            data.append('id_pengaduan', this.pengaduan_ini.id_pengaduan)
+            data.append('status', this.pengaduan_ini.status)
+            data.append('tanggapan', this.pengaduan_ini.tanggapan)
+            data.append('id_tanggapan', this.pengaduan_ini.id_tanggapan)
+            axios.post('/api/petugas/tanggapan/create',data)
+            .then(response => {
+                this.get_pengaduan()
+                this.erro = []
+            })
+            .catch(error => {
+                this.erro = error.response.data.errors.tanggapan
+                console.log("ERRRR:: ",error.response.data.errors);
+            });
+             $("#modalshow").modal('hide');
+            this.$swal.fire('Saved!', '', 'success')
+        } else if (result.isDenied) {
+            this.$swal.fire('Changes are not saved', '', 'info')
+        }
+        })
+
+    },
+    apus(pengaduan,index){
+             this.$swal.fire({
+        title: 'Do you want to save the changes?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: `Save`,
+        denyButtonText: `Don't save`,
+        }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+             let data = new FormData()
+            data.append('id_pengaduan',pengaduan.id_pengaduan)
+            data.append('id_tanggapan',pengaduan.id_tanggapan)
+            axios.post('/api/petugas/tanggapan/delete',data)
+            .then(response => {
+                this.get_pengaduan()
+            })
+            this.$swal.fire('Saved!', '', 'success')
+        } else if (result.isDenied) {
+            this.$swal.fire('Changes are not saved', '', 'info')
+        }
+        })
+    },
+    show: function (pengaduan) {
+        this.pengaduan_ini = []
+      this.preview_img = [];
+       $('select[name=stat]').val(pengaduan.status);
+      $("#modalshow").modal();
+      this.pengaduan_ini = pengaduan;
+      this.get_pengaduan();
+    },
         copy(){
-        
               var dummy = document.createElement("input");
     //dummy.style.display = 'none';
     document.body.appendChild(dummy);
@@ -126,7 +277,7 @@ export default {
          var img = document.getElementById('img');
         //  doc.addImage(img.src);
 
-       var col = ["No","Pelapor","NIK","Isi Laporan","Foto","Status","TGL Lapor"];
+       var col = ["No","Id Pengaduan","Pelapor","NIK","Isi Laporan","Foto","Status","TGL Lapor"];
        var col1 = ["No","Id Pengaduan", "Tanggapan", "Nama Petugas", "TGL Tanggapan"];
        var rows = [];
        var rows1 = [];
@@ -136,7 +287,7 @@ export default {
         let ii = 1;
 
         ittem.forEach(e => {      
-        var temp = [i++,e.nama,e.nik,e.isi_laporan,e.foto,e.status,e.tgl_pengaduan];
+        var temp = [i++,e.id_pengaduan,e.nama,e.nik,e.isi_laporan,e.foto,e.status,e.tgl_pengaduan];
         var temp1 = [ii++,e.id_pengaduan,e.tanggapan,e.nama_petugas,e.tgl_tanggapan];
         rows.push(temp);
         rows1.push(temp1);
@@ -152,7 +303,7 @@ export default {
        //window.print()
       // document.getElementById("#renderme").print()
         var doc = new jsPDF();
-       var col = ["No","Pelapor","NIK","Isi Laporan","Foto","Status","TGL Lapor"];
+       var col = ["No","Id Pengaduan","Pelapor","NIK","Isi Laporan","Foto","Status","TGL Lapor"];
        var col1 = ["No","Id Pengaduan", "Tanggapan", "Nama Petugas", "TGL Tanggapan"];
        var rows = [];
        var rows1 = [];
@@ -162,7 +313,7 @@ export default {
         let ii = 1;
 
         ittem.forEach(e => {      
-        var temp = [i++,e.nama,e.nik,e.isi_laporan,e.foto,e.status,e.tgl_pengaduan];
+        var temp = [i++,e.id_pengaduan,e.nama,e.nik,e.isi_laporan,e.foto,e.status,e.tgl_pengaduan];
         var temp1 = [ii++,e.id_pengaduan,e.tanggapan,e.nama_petugas,e.tgl_tanggapan];
         rows.push(temp);
         rows1.push(temp1);

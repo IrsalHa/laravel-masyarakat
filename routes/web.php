@@ -22,6 +22,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['prefix' => 'api/petugas','middleware' => 'auth:petugas'], function(){
     Route::get('/pengaduan/get', 'PengaduanController@index_all')->name('pengaduan.index.all');
+    Route::post('/tanggapan/delete', 'TanggapanController@delete')->name('tanggapan.delete');
+    Route::post('/tanggapan/create', 'TanggapanController@tanggapi')->name('tanggapan.create');
+
 });
 
 Route::group(['prefix' => 'api','middleware' => 'auth:web'], function(){
