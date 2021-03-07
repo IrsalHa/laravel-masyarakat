@@ -261,12 +261,12 @@ export default {
       return pic;
     },
     show: function (pengaduan) {
+      this.pengaduan_ini = pengaduan;
       this.preview_img = [];
       $("#modalshow").modal();
-      this.pengaduan_ini = pengaduan;
       this.get_pengaduan();
     },
-    updatepengaduan: function () {
+    updatepengaduan() {
       this.$swal.fire({
         title: "Do you want to save the changes?",
         showDenyButton: true,
@@ -280,17 +280,18 @@ export default {
               "Content-Type": "image/png",
             },
           };
-          let data = new FormData();
-          data.append("id_pengaduan", this.pengaduan_ini.id_pengaduan);
-          data.append("isi_laporan", this.pengaduan_ini.isi_laporan);
+          let dataa = new FormData();
+          dataa.append("id_pengaduan", this.pengaduan_ini.id_pengaduan);
+          dataa.append("isi_laporan", this.pengaduan_ini.isi_laporan);
           //data.append('img', this.pengaduan_ini.foto)
-          data.append("foto", this.img);
+          dataa.append("foto", this.img);
 
-          axios.post("/api/pengaduan/update", data, config).then((response) => {
+          axios.post("/api/pengaduan/update", dataa, config).then(response => {
             this.get_pengaduan();
             $("#modalshow").modal("hide");
-          });
           this.$swal.fire("Saved!", "", "success");
+          });
+          
         } else if (result.isDenied) {
           this.$swal.fire("Changes are not saved", "", "info");
         }
@@ -330,20 +331,20 @@ export default {
       data.append("isi_laporan", this.pengaduan_ini.isi_laporan);
       data.append("foto", this.img);
 
-      axios.post("/api/pengaduan/buat", data, config).then((response) => {
+      axios.post("/api/pengaduan/buat", data, config).then(response => {
         $("#modalpengaduan").modal("hide");
         this.get_pengaduan();
         this.$swal.fire("Sukses Create!");
       });
       this.get_pengaduan();
       this.pengaduan_ini = [];
-      this.img = [];
-      this.preview_img = [];
+      this.img = null
+      this.preview_img = null
     },
     buat: function () {
       this.pengaduan_ini = [];
-      this.img = [];
-      this.preview_img = [];
+      this.img = null
+      this.preview_img = null
       $("#modalpengaduan").modal();
     },
     onPreview(e) {

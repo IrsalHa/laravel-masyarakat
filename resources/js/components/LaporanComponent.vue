@@ -1,18 +1,7 @@
 <template>
   <div class="row">
-       <div class="col-md-3">
-      <div class="card mt-2">
-        <div class="card-body text-center">
-          <button @click="buat()" class="btn btn-md btn-primary m-1">
-            Export PDF
-          </button>
-        <button @click="buat()" class="btn btn-md btn-primary m-1">
-            Export Excel
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-9">
+
+    <div class="col-md-12">
         <div class="mb-2"></div>
         <div >
               <button @click="copy()" class="btn btn-sm btn-primary d-inline-block">Copy</button>
@@ -175,10 +164,9 @@
 import jsPDF from 'jspdf'
 import 'jspdf-autotable';
 
-
 export default {
     components: {
-      
+
     },
     data(){
         return {
@@ -210,19 +198,18 @@ export default {
             axios.post('/api/petugas/tanggapan/create',data)
             .then(response => {
                 this.get_pengaduan()
-                this.erro = []
+                $("#modalshow").modal('hide');
+            this.$swal.fire('Saved!', '', 'success')
             })
             .catch(error => {
                 this.erro = error.response.data.errors.tanggapan
                 console.log("ERRRR:: ",error.response.data.errors);
+                this.$swal.fire('Error!', '', 'error')
             });
-             $("#modalshow").modal('hide');
-            this.$swal.fire('Saved!', '', 'success')
         } else if (result.isDenied) {
             this.$swal.fire('Changes are not saved', '', 'info')
         }
         })
-
     },
     apus(pengaduan,index){
              this.$swal.fire({
@@ -253,6 +240,7 @@ export default {
        $('select[name=stat]').val(pengaduan.status);
       $("#modalshow").modal();
       this.pengaduan_ini = pengaduan;
+      this.erro = []
       this.get_pengaduan();
     },
         copy(){
@@ -287,7 +275,7 @@ export default {
         let ii = 1;
 
         ittem.forEach(e => {      
-        var temp = [i++,e.id_pengaduan,e.nama,e.nik,e.isi_laporan,e.foto,e.status,e.tgl_pengaduan];
+        var temp = [i++,e.id_pengaduan,e.nama,e.nik,e.isi_laporan,'<a href="e.foto">e.foto</a>',e.status,e.tgl_pengaduan];
         var temp1 = [ii++,e.id_pengaduan,e.tanggapan,e.nama_petugas,e.tgl_tanggapan];
         rows.push(temp);
         rows1.push(temp1);
@@ -317,7 +305,7 @@ export default {
         var temp1 = [ii++,e.id_pengaduan,e.tanggapan,e.nama_petugas,e.tgl_tanggapan];
         rows.push(temp);
         rows1.push(temp1);
-
+        
         });        
         doc.autoTable(col, rows, { startY: 10 });
         doc.autoTable(col1, rows1, { startY: 60 });

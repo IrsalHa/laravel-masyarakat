@@ -10,13 +10,11 @@ window.Vue = require('vue');
 import VueSweetalert2 from 'vue-sweetalert2';
 import DataTable from "vue-materialize-datatable";
 import JsonExcel from "vue-json-excel";
-import pdf from 'vue-pdf'
 import jsPDF from 'jspdf'
-
 import 'sweetalert2/dist/sweetalert2.min.css';
-import Vue from 'vue';
 Vue.use(VueSweetalert2);
 Vue.use(DataTable)
+
 Vue.use(jsPDF)
 
 /**

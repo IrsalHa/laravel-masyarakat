@@ -15,7 +15,7 @@ class TanggapanController extends Controller
         $request->validate([
             'status' => 'required',
             'id_pengaduan' => 'required',
-            'tanggapan' => 'required'
+            'tanggapan' => 'required|not_in:null'
         ]);
         
         $data = Tanggapan::updateOrCreate(
