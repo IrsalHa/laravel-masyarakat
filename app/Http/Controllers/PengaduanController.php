@@ -71,7 +71,7 @@ class PengaduanController extends Controller
             $tujuan_upload = 'data_file';
             $fileName = Carbon::now()->timestamp.'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $file->move($tujuan_upload,$fileName);
-            unlink(public_path().Pengaduan::find($request->id_pengaduan)->value('foto'));
+            unlink(public_path().Pengaduan::where('id_pengaduan',$request->id_pengaduan)->value('foto'));
             $data = DB::table('pengaduan')
                     ->where('pengaduan.id_pengaduan','=',$request->id_pengaduan)
                     ->update(['isi_laporan' => $request->isi_laporan,

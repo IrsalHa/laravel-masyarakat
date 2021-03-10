@@ -1,15 +1,9 @@
 <template>
   <div class="row">
-    <div class="col-md-3">
-      <div class="card mt-2">
-        <div class="card-body text-center">
-          <button @click="buat()" class="btn btn-md btn-primary m-1">
+    <div class="col-md-12">
+         <button @click="buat()" class="btn btn-md btn-primary m-1">
             Buat Pengaduan
           </button>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-9">
       <div class="table-responsive mt-2">
         <table class="table table-hover">
           <thead class="table-secondary">
@@ -114,7 +108,7 @@
                 />
               </div>
               <div class="form-group-row">
-                <input @change="onPreview" type="file" />
+                <input id="modalpengaduann" @change="onPreview" type="file" />
               </div>
             </form>
           </div>
@@ -193,7 +187,7 @@
                 />
               </div>
               <div class="form-group-row">
-                <input @change="onPreview" type="file" />
+                <input id="modalshoww" @change="onPreview" type="file" />
               </div>
               <br />
               <div class="form-group-row">
@@ -261,6 +255,8 @@ export default {
       return pic;
     },
     show: function (pengaduan) {
+      document.getElementById('modalpengaduann').value= null;
+      document.getElementById('modalshoww').value= null;
       this.pengaduan_ini = pengaduan;
       this.preview_img = [];
       $("#modalshow").modal();
@@ -290,6 +286,8 @@ export default {
             this.get_pengaduan();
             $("#modalshow").modal("hide");
           this.$swal.fire("Saved!", "", "success");
+             document.getElementById('modalpengaduann').value= null;
+      document.getElementById('modalshoww').value= null;
           });
           
         } else if (result.isDenied) {
@@ -335,6 +333,8 @@ export default {
         $("#modalpengaduan").modal("hide");
         this.get_pengaduan();
         this.$swal.fire("Sukses Create!");
+           document.getElementById('modalpengaduann').value= null;
+      document.getElementById('modalshoww').value= null;
       });
       this.get_pengaduan();
       this.pengaduan_ini = [];
@@ -342,6 +342,8 @@ export default {
       this.preview_img = null
     },
     buat: function () {
+         document.getElementById('modalpengaduann').value= null;
+      document.getElementById('modalshoww').value= null;
       this.pengaduan_ini = [];
       this.img = null
       this.preview_img = null

@@ -2790,12 +2790,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2815,6 +2809,8 @@ __webpack_require__.r(__webpack_exports__);
       return pic;
     },
     show: function show(pengaduan) {
+      document.getElementById('modalpengaduann').value = null;
+      document.getElementById('modalshoww').value = null;
       this.pengaduan_ini = pengaduan;
       this.preview_img = [];
       $("#modalshow").modal();
@@ -2847,6 +2843,9 @@ __webpack_require__.r(__webpack_exports__);
             $("#modalshow").modal("hide");
 
             _this.$swal.fire("Saved!", "", "success");
+
+            document.getElementById('modalpengaduann').value = null;
+            document.getElementById('modalshoww').value = null;
           });
         } else if (result.isDenied) {
           _this.$swal.fire("Changes are not saved", "", "info");
@@ -2896,6 +2895,9 @@ __webpack_require__.r(__webpack_exports__);
         _this3.get_pengaduan();
 
         _this3.$swal.fire("Sukses Create!");
+
+        document.getElementById('modalpengaduann').value = null;
+        document.getElementById('modalshoww').value = null;
       });
       this.get_pengaduan();
       this.pengaduan_ini = [];
@@ -2903,6 +2905,8 @@ __webpack_require__.r(__webpack_exports__);
       this.preview_img = null;
     },
     buat: function buat() {
+      document.getElementById('modalpengaduann').value = null;
+      document.getElementById('modalshoww').value = null;
       this.pengaduan_ini = [];
       this.img = null;
       this.preview_img = null;
@@ -52328,26 +52332,20 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "row" }, [
-    _c("div", { staticClass: "col-md-3" }, [
-      _c("div", { staticClass: "card mt-2" }, [
-        _c("div", { staticClass: "card-body text-center" }, [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-md btn-primary m-1",
-              on: {
-                click: function($event) {
-                  return _vm.buat()
-                }
-              }
-            },
-            [_vm._v("\n          Buat Pengaduan\n        ")]
-          )
-        ])
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "col-md-9" }, [
+    _c("div", { staticClass: "col-md-12" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-md btn-primary m-1",
+          on: {
+            click: function($event) {
+              return _vm.buat()
+            }
+          }
+        },
+        [_vm._v("\n          Buat Pengaduan\n        ")]
+      ),
+      _vm._v(" "),
       _c("div", { staticClass: "table-responsive mt-2" }, [
         _c("table", { staticClass: "table table-hover" }, [
           _vm._m(0),
@@ -52507,7 +52505,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("div", { staticClass: "form-group-row" }, [
                     _c("input", {
-                      attrs: { type: "file" },
+                      attrs: { id: "modalpengaduann", type: "file" },
                       on: { change: _vm.onPreview }
                     })
                   ])
@@ -52637,7 +52635,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("div", { staticClass: "form-group-row" }, [
                     _c("input", {
-                      attrs: { type: "file" },
+                      attrs: { id: "modalshoww", type: "file" },
                       on: { change: _vm.onPreview }
                     })
                   ]),
