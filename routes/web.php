@@ -24,6 +24,9 @@ Route::group(['prefix' => 'api/petugas','middleware' => 'auth:petugas'], functio
     Route::get('/pengaduan/get', 'PengaduanController@index_all')->name('pengaduan.index.all');
     Route::post('/tanggapan/delete', 'TanggapanController@delete')->name('tanggapan.delete');
     Route::post('/tanggapan/create', 'TanggapanController@tanggapi')->name('tanggapan.create');
+    Route::get('/user/get', 'UserController@get_UserNon')->name('user.index.non');
+    Route::post('/user/verif', 'UserController@verif')->name('user.verif');
+    Route::get('/petugas/get', 'PetugasController@get_Petugas')->name('petugas.index');
 
 });
 

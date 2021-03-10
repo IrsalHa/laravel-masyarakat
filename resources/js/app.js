@@ -29,6 +29,7 @@ Vue.use(jsPDF)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 Vue.component('laporan-component', require('./components/LaporanComponent.vue').default);
 Vue.component("downloadExcel", JsonExcel);
+Vue.component('user-list-component', require('./components/ListUserComponent.vue').default);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('pengaduan-component', require('./components/PengaduanComponent.vue').default);
 /**

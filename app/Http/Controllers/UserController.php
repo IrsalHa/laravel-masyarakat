@@ -17,4 +17,30 @@ class UserController extends Controller
             'data' => $data
         ]);
     }
+
+    public function get_UserNon(){
+        $data = DB::table('masyarakat')
+                ->where('status_user','=','nonAktif')
+                ->get();
+        
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
+    }
+
+    public function verif(Request $request){
+        $request->validate([
+            'nik' => 'required'
+        ]);
+
+        $data = DB::table('masyarakat')
+                    ->where('nik','=',$request->nik)
+                    ->update([
+                        'status_user' => 'Aktif'
+                    ]);
+        return response()->json([
+            'success' => true
+        ]);
+    }
 }
